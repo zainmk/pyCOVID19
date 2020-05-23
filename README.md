@@ -17,5 +17,7 @@ what it really means to 'flatten the curve'. As I progress through the project, 
  Schedule:
  
 May 18, 2020 - Start Date for Project
+
 May 23, 2020 - Pushed existing intial code to Github
+
 ...
