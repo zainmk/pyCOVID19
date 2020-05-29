@@ -14,6 +14,8 @@ what it really means to 'flatten the curve'. As I progress through the project, 
   
  Project definitely in its origin phase, a lot of work left to do, to streamline and organize the code itself.
  
+ At this point, the majority of the work towards general completeness will be found in 'calgary.py'
+ 
  Schedule:
  
 May 18, 2020 - Start Date for Project
