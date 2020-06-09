@@ -11,10 +11,9 @@ Initially, for me the project was meant to exemplify my knowledge of python on a
 what it really means to 'flatten the curve'. As I progress through the project, several changes will be made in terms of the...
   - type of data that is being compared (ex. temp of a city vs. new cases of COVID)
   - Geographical Location of Cities (Starting with Canada).
+  - Experimenting with different kinds of elemtary data analysis
   
  Project definitely in its origin phase, a lot of work left to do, to streamline and organize the code itself.
- 
- At this point, the majority of the work towards general completeness will be found in 'calgary.py'
  
  Schedule:
  
