@@ -22,4 +22,6 @@ May 18, 2020 - Start Date for Project
 
 May 23, 2020 - Pushed existing intial code to Github
 
+June 06, 2020 - Updated code posted. 'Calgary, AB' data collection is now complete and some elementary data analysis has been conducted.
+
 ...
