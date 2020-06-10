@@ -10,6 +10,14 @@
 import calgary
 import data_analysis
 
+data_analysis.basic_stats("calgarytb")
+data_analysis.linear_analysis("calgarytb")
+data_analysis.polynomial_analysis("calgarytb", 10)
+
+
+
+
+
 
 
 

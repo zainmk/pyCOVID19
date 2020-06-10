@@ -84,6 +84,9 @@ startNumberOfCases = 0
 tempCurrentDate = updateDate
 while tempCurrentDate != todayStr:
     tempTotalCasesByDate[tempCurrentDate] = startNumberOfCases
+    if tempCurrentDate in totalCasesByDate:
+        startNumberOfCases = totalCasesByDate[tempCurrentDate]
+        tempTotalCasesByDate[tempCurrentDate] = startNumberOfCases
     tempCurrentDateObj = datetime.datetime.strptime(tempCurrentDate, '%d-%m-%Y')
     tempCurrentDateObj += datetime.timedelta(days=1)
     tempCurrentDate = tempCurrentDateObj.strftime("%d-%m-%Y")
@@ -113,7 +116,6 @@ driver.get("https://climate.weather.gc.ca/climate_data/daily_data_e.html?hlyRang
 while not isItToday:
     # Extract the web page month and year
     headerTitle = driver.find_element_by_xpath("//*[@id=\"wb-cont\"]")
-    print(headerTitle.text)
     for key in monthDict:
         if key in headerTitle.text:
             currentMonth = monthDict[key]
@@ -123,12 +125,10 @@ while not isItToday:
 
     if int(currentMonth) != int(updateDateMonth):
         updateDateDayInt = 1
-        print("The updateDateDayInt has been made:", 1)
 
     # Populate the tempData Dictionary with values obtained from HTML web page for mean temperature and date associated
     for updateDateDayInt in range(updateDateDayInt, calendar.monthrange(int(currentYear), int(currentMonth))[1] + 1):
         dateTimeStr = str(updateDateDayInt).zfill(2) + "-" + currentMonth + "-" + currentYear
-        print(dateTimeStr, "and", todayStr)
 
         if dateTimeStr == todayStr:
             isItToday = True
