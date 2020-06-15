@@ -47,12 +47,11 @@ if alreadyExists:
         updateDate_datetime_obj = datetime.datetime.strptime(lastDate, '%d-%m-%Y')
         updateDate_datetime_obj += datetime.timedelta(days=1)
         updateDate = updateDate_datetime_obj.strftime("%d-%m-%Y")
-        print(updateDate)
         if updateDate == todayStr:
             isItToday = True
 else:
     mycursor.execute("CREATE TABLE " + tableName + "(id INT AUTO_INCREMENT PRIMARY KEY, `Date(d-m-y)` VARCHAR(255), "
-                                                   "`Total Cases` VARCHAR(255),`temp(C)` VARCHAR(255))")
+                                                   "`Total # Of Cases` VARCHAR(255),`temp(C)` VARCHAR(255))")
 
 updateDateMonth = str(int(updateDate[3:5]))  # This will eliminate leading 0's but return a string
 
@@ -99,7 +98,7 @@ mycursor.execute("SELECT `date(d-m-y)` FROM calgarytb")
 myresult = mycursor.fetchall()
 if totalCasesByDate:
     inputList = [(k, v) for k, v in totalCasesByDate.items()]
-    sql = "INSERT INTO calgarytb (`date(d-m-y)`, `Total Cases`) VALUES (%s, %s)"
+    sql = "INSERT INTO calgarytb (`date(d-m-y)`, `Total # Of Cases`) VALUES (%s, %s)"
     val = inputList
     mycursor.executemany(sql, val)
     mydb.commit()
@@ -140,7 +139,10 @@ while not isItToday:
             try:
                 float(inputTemp)
             except ValueError:
-                inputTemp = "Missing Info"
+                prevDateObj = datetime.datetime.strptime(dateTimeStr, "%d-%m-%Y")
+                prevDay = prevDateObj - datetime.timedelta(days=1)
+                prevDateStr = prevDay.strftime("%d-%m-%Y")
+                inputTemp = tempData[prevDateStr]
             tempData[dateTimeStr] = inputTemp
 
     # If it still isn't today's date and the while loop hasn't been broken, click 'Next Month' for next month's data
