@@ -23,4 +23,6 @@ May 23, 2020 - Pushed existing intial code to Github
 
 June 06, 2020 - Updated code posted. 'Calgary, AB' data collection is now complete and some elementary data analysis has been conducted.
 
+June 28, 2020 - Added and updated data collection for 'Toronto, ON', now fully complete. Runs well wtih data analysis methods
+
 ...
