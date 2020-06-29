@@ -192,6 +192,16 @@ def multiple_regression_days_and_temp_vs_new_cases(cityName):
     print()
 
 
+def basic_plot(cityName):
+    data_collect(cityName)
+
+    plt.scatter(numberOfDaysList, totalCasesDataList)
+    plt.title("Basic Plot")
+    plt.axvline(x=30)
+    plt.xlabel("Days Post March 01, 2020")
+    plt.ylabel("Total Number of COVID Cases")
+    plt.show()
+
 
 
 

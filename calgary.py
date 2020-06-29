@@ -54,6 +54,7 @@ else:
                                                    "`Total # Of Cases` VARCHAR(255),`temp(C)` VARCHAR(255))")
 
 updateDateMonth = str(int(updateDate[3:5]))  # This will eliminate leading 0's but return a string
+updaetDateYear = str(int(updateDate[6:]))
 
 # ---------------------------------------------------------------------------------------------------------------------#
 #                      Begin by acquiring data for the total number of COVID cases by day from the update
@@ -94,7 +95,7 @@ while tempCurrentDate != todayStr:
 totalCasesByDate = tempTotalCasesByDate
 
 # Fill in the db 'calgarytb' with the values acquired, if any.
-mycursor.execute("SELECT `date(d-m-y)` FROM calgarytb")
+mycursor.execute("SELECT `Date(d-m-y)` FROM calgarytb")
 myresult = mycursor.fetchall()
 if totalCasesByDate:
     inputList = [(k, v) for k, v in totalCasesByDate.items()]
