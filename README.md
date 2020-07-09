@@ -12,8 +12,8 @@ what it really means to 'flatten the curve'. As I progress through the project, 
   - type of data that is being compared (ex. temp of a city vs. new cases of COVID)
   - Geographical Location of Cities (Starting with Canada).
   - Experimenting with different kinds of elemtary data analysis
-  
- Project definitely in its origin phase, a lot of work left to do, to streamline and organize the code itself.
+ 
+ Downloading the program requires ChromeDriver v83 (https://chromedriver.chromium.org/) and MySQL80 Community Server (https://dev.mysql.com/downloads/mysql/)
  
  Schedule:
  
