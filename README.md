@@ -25,4 +25,6 @@ June 06, 2020 - Updated code posted. 'Calgary, AB' data collection is now comple
 
 June 28, 2020 - Added and updated data collection for 'Toronto, ON', now fully complete. Runs well wtih data analysis methods
 
+July 30, 2020 - Fixed some bugs with the webscraping portion of the code. Added funcitonality for use without an SQL database. Added some data analysis methods.
+
 ...
