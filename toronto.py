@@ -56,7 +56,6 @@ if alreadyExists:
         updateDate_datetime_obj = datetime.datetime.strptime(lastDate, '%d-%m-%Y')
         updateDate_datetime_obj += datetime.timedelta(days=1)
         updateDate = updateDate_datetime_obj.strftime("%d-%m-%Y")
-        print(updateDate)
         if updateDate == todayStr:
             isItToday = True
 else:
@@ -76,23 +75,29 @@ chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--incognito")
 driver = webdriver.Chrome(options=chrome_options)
 driver.get("https://www.publichealthontario.ca/en/data-and-analysis/infectious-disease/covid-19-data-surveillance/covid-19-data-tool")
-time.sleep(5)
-driver.find_element_by_xpath('//*[@title="Trends"]').click()
-time.sleep(5)
 
-driver.find_element_by_xpath("//*[@id=\"trendsField\"]/div[2]/div/div").click()
-time.sleep(3)
-driver.find_element_by_xpath("//*[@id=\"trendsField\"]/div[2]/div/div/div[2]/div[32]").click()
+
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@title="Trends"]'))).click()
+WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id=\"trendsField\"]/div[2]/div/div'))).click()
+
+while True:
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id=\"trendsField\"]/div[2]/div/div/div[2]/div[32]'))).click()
+        break
+    except:
+        pass
+
+
 divElementOverSVG = driver.find_element_by_xpath("//*[@id=\"covidChart1\"]/div/div[1]")
-
 innerHTML = divElementOverSVG.get_attribute("innerHTML")
 
-counter = 20900
+counter = 0
 stringList = []
 
 # Find number of days between March 01, 2020 and Today
-
-numberOfElapsedDays = (datetime.datetime.now() - datetime.datetime.strptime("01-03-2020", "%d-%m-%Y")).days
+numberOfElapsedDays = (datetime.datetime.now() - datetime.datetime.strptime("15-01-2020", "%d-%m-%Y")).days
 
 for x in range(0, numberOfElapsedDays):
     counter = innerHTML.find("aria-label", counter)
@@ -125,12 +130,12 @@ for x in newCasesByDate:
 
 keyList = list(totalCasesByDate.keys())
 
+
 for k in keyList:
     if k == updateDate:
         break
     del totalCasesByDate[k]
 
-print(totalCasesByDate)
 
 
 mycursor.execute("SELECT `Date(d-m-y)` FROM torontotb")
@@ -158,7 +163,7 @@ while not isItToday:
 
     for currentDay in range(currentDay, calendar.monthrange(int(currentYear), int(currentMonth))[1] + 1):
         dateTimeStr = str(currentDay).zfill(2) + "-" + currentMonth.zfill(2) + "-" + currentYear
-        print(dateTimeStr)
+
 
         if dateTimeStr == todayStr:
             isItToday = True

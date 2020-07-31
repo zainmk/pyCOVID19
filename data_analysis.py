@@ -3,7 +3,10 @@ import json
 import mysql.connector
 import calendar
 
-import numpy
+import calgary_SQL_less
+import toronto_SQL_less
+
+import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
@@ -19,6 +22,7 @@ mydb = mysql.connector.connect(
     database="tempdb"
 )
 mycursor = mydb.cursor()
+
 cityDict = {"calgarytb": "Calgary, AB", "torontotb": "Toronto, ON"}
 totalCasesDataList = []
 newCasesDataList = []
@@ -36,6 +40,7 @@ def data_collect(cityName):
             numberOfDaysList.append(counter)
             totalCasesDataList.append(int(item[0]))
         newCasesDataList.append(totalCasesDataList[0])
+        print(newCasesDataList)
         for x in range(1, len(totalCasesDataList)):
             newCasesDataList.append(totalCasesDataList[x] - totalCasesDataList[x - 1])
         mycursor.execute("SELECT `temp(C)` FROM " + cityName)
@@ -44,13 +49,66 @@ def data_collect(cityName):
             tempList.append(float(x[0]))
 
 
-def basic_stats_total_cases(cityName):
-    data_collect(cityName)
-    print("Mean Value:", numpy.mean(totalCasesDataList))
-    print("Median Value:", numpy.median(totalCasesDataList))
-    print("Standard Deviation:", numpy.std(totalCasesDataList))
-    print("The 90th percentile is: ", numpy.percentile(totalCasesDataList, 90))
+def data_collect_SQL_less(cityName):
+    if not (totalCasesDataList or newCasesDataList or numberOfDaysList or tempList):
+        totalCOVIDCases = []
+        TemperatureData = []
+
+        if cityName == 'calgarytb':
+            totalCOVIDCases, TemperatureData = calgary_SQL_less.collect_data()
+        if cityName == 'torontotb':
+            totalCOVIDCases, TemperatureData = toronto_SQL_less.collect_data()
+
+        # Format data for analysis
+        counter = 0
+        for item in totalCOVIDCases:
+            counter = counter + 1
+            numberOfDaysList.append(counter)
+            totalCasesDataList.append(int(totalCOVIDCases[item]))
+        newCasesDataList.append(totalCasesDataList[0])
+        for x in range(1, len(totalCasesDataList)):
+            newCasesDataList.append(totalCasesDataList[x] - totalCasesDataList[x-1])
+        for item in TemperatureData:
+            tempList.append(float(TemperatureData[item]))
+
+        print(numberOfDaysList)
+        print(totalCasesDataList)
+        print(newCasesDataList)
+        print(tempList)
+
+
+def basic_stats_total_cases(cityName, sql):
+    if sql:
+        data_collect(cityName)
+    else:
+        data_collect_SQL_less(cityName)
+
+    print("Mean Value:", np.mean(totalCasesDataList))
+    print("Median Value:", np.median(totalCasesDataList))
+    print("Standard Deviation:", np.std(totalCasesDataList))
+    print("The 90th percentile is: ", np.percentile(totalCasesDataList, 90))
     print()
+
+# Function that compares the trends for all cities
+def city_comparison():
+    data_collect("calgarytb")
+    calgary_total_cases = totalCasesDataList
+    data_collect("torontotb")
+    toronto_total_cases = totalCasesDataList
+
+
+
+def regular_trend(cityName):
+    data_collect(cityName)
+    plt.plot(numberOfDaysList, totalCasesDataList)
+    plt.title("Total Number of Cases for " + cityDict[cityName] + " , Days Post March 01, 2020")
+    plt.xlabel("Days Post March 01, 2020")
+    plt.ylabel("Total Number of Cases")
+    plt.xticks(np.arange(0, 180, step=30), )
+    plt.show()
+
+
+
 
 
 def linear_analysis_days_vs_total_cases(cityName):
@@ -72,8 +130,8 @@ def linear_analysis_days_vs_total_cases(cityName):
 
 def polynomial_analysis_days_vs_total_cases(cityName, degree=15):
     data_collect(cityName)
-    myModel = numpy.poly1d(numpy.polyfit(numberOfDaysList, totalCasesDataList, degree))
-    myLine = numpy.linspace(1, len(totalCasesDataList), 100)
+    myModel = np.poly1d(np.polyfit(numberOfDaysList, totalCasesDataList, degree))
+    myLine = np.linspace(1, len(totalCasesDataList), 100)
     nextDayPred = myModel(len(numberOfDaysList))
     R = r2_score(totalCasesDataList, myModel(numberOfDaysList))
     R = round(R, 4)
@@ -105,8 +163,8 @@ def linear_analysis_days_vs_new_cases(cityName):
 
 def polynomial_analysis_days_vs_new_cases(cityName, degree=15):
     data_collect(cityName)
-    myModel = numpy.poly1d(numpy.polyfit(numberOfDaysList, newCasesDataList, degree))
-    myLine = numpy.linspace(1, len(newCasesDataList), 100)
+    myModel = np.poly1d(np.polyfit(numberOfDaysList, newCasesDataList, degree))
+    myLine = np.linspace(1, len(newCasesDataList), 100)
     nextDayPred = myModel(len(numberOfDaysList))
     R = r2_score(newCasesDataList, myModel(numberOfDaysList))
     R = round(R, 4)

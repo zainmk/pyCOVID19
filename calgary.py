@@ -30,6 +30,7 @@ tempData = {}
 casesData = {}
 totalCasesByDate = {}
 datesForCOVID = []
+startNumberOfCases = 0
 
 
 # Creating table if it doesnt exist and updating the 'updateDate' if it already does
@@ -49,12 +50,17 @@ if alreadyExists:
         updateDate = updateDate_datetime_obj.strftime("%d-%m-%Y")
         if updateDate == todayStr:
             isItToday = True
+        mycursor.execute("SELECT `Total # Of Cases` FROM calgarytb")
+        myresult = mycursor.fetchall()
+        startNumberOfCases = myresult[-1][0]
+
+
 else:
     mycursor.execute("CREATE TABLE " + tableName + "(id INT AUTO_INCREMENT PRIMARY KEY, `Date(d-m-y)` VARCHAR(255), "
                                                    "`Total # Of Cases` VARCHAR(255),`temp(C)` VARCHAR(255))")
 
 updateDateMonth = str(int(updateDate[3:5]))  # This will eliminate leading 0's but return a string
-updaetDateYear = str(int(updateDate[6:]))
+updateDateYear = str(int(updateDate[6:]))
 
 # ---------------------------------------------------------------------------------------------------------------------#
 #                      Begin by acquiring data for the total number of COVID cases by day from the update
@@ -80,7 +86,8 @@ for x in range(0, len(datesForCOVID)): # Properly Total Cases per date dictionar
     totalCasesByDate[datesForCOVID[x]] = totalCases[x]
 
 tempTotalCasesByDate = {}
-startNumberOfCases = 0
+print(startNumberOfCases)
+
 tempCurrentDate = updateDate
 while tempCurrentDate != todayStr:
     tempTotalCasesByDate[tempCurrentDate] = startNumberOfCases
@@ -93,6 +100,7 @@ while tempCurrentDate != todayStr:
     if tempCurrentDate in totalCasesByDate:
         startNumberOfCases = totalCasesByDate[tempCurrentDate]
 totalCasesByDate = tempTotalCasesByDate
+
 
 # Fill in the db 'calgarytb' with the values acquired, if any.
 mycursor.execute("SELECT `Date(d-m-y)` FROM calgarytb")
@@ -157,21 +165,6 @@ for key, value in tempData.items():
     mydb.commit()
 
 driver.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
